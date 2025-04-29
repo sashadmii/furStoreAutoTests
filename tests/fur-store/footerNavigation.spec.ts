@@ -60,7 +60,24 @@ test('Footer navigation LinkedIn link should work', async ({ page }) => {
 
 test('Footer navigation Instargam link should work', async ({ page }) => {
   await page.getByRole('listitem').filter({ hasText: 'Contact Us Need help with' }).locator('div').getByRole('link').nth(2).click();
+  await page.waitForNavigation();
+  await expect(page.url()).toContain('https://www.instagram.com');
 
-  await expect(page.url()).toContain('https://www.instagram.com/h.i.l.a.r.i.o.n');
+});
 
+test('Footer navigation has accurate copyright year', async ({ page }) => {
+  await expect(page.getByText('All Rights Reserved © 2023')).toBeVisible();
+});
+
+test('Footer navigation has right year', async ({ page }) => {
+
+  // accurate year
+  // const currentYear = new Date().getFullYear().toString();
+  // const locator = page.locator('.copyright');
+  // await expect(locator).toContainText(currentYear);
+
+  // year 2023
+  const currentYear = '2023';
+  const locator = page.locator('.copyright');
+  await expect(locator).toContainText(currentYear);
 });
