@@ -1,6 +1,7 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
+import ProductDetailsComponent from '../../components/ProductDetailsComponent';
 
-let page;
+let page: Page;
 
 test.beforeAll(async ({ browser }) => {
   const context = await browser.newContext();
@@ -11,32 +12,42 @@ test.beforeAll(async ({ browser }) => {
 
 
 test('Product page has heading', async ({ }) => {
-  await expect(page.locator('h2')).toBeVisible();
+  const { getPageHeading } = new ProductDetailsComponent(page);
+
+  await expect(getPageHeading()).toBeVisible();
 });
 
 test('Product has image', async ({ }) => {
-  await expect(page.locator('.styles')).toBeVisible();
+  const { getProductImageHeading } = new ProductDetailsComponent(page);
+
+  await expect(getProductImageHeading()).toBeVisible();
 });
 
 test('Product has color picker', async ({ }) => {
-  await expect(page.locator('.style-picker > div').first()).toBeVisible();
-  await expect(page.locator('.style-picker > div:nth-child(2)')).toBeVisible();
-  await expect(page.locator('.style-picker > div:nth-child(3)')).toBeVisible();
-  await expect(page.locator('.style-picker > div:nth-child(4)')).toBeVisible();
+  const { getColor } = new ProductDetailsComponent(page);
+
+  await expect(getColor(1)).toBeVisible();
+  await expect(getColor(2)).toBeVisible();
+  await expect(getColor(3)).toBeVisible();
+  await expect(getColor(4)).toBeVisible();
 });
 
 test('Product has heading', async ({ }) => {
-  await expect(page.locator('h3')).toBeVisible();
+  const { getProductHeading } = new ProductDetailsComponent(page);
+
+  await expect(getProductHeading()).toBeVisible();
 });
 
 test('Product has description', async ({ }) => {
-  await expect(page.getByText('Sacha’s elegant antlers have')).toBeVisible();
-  await expect(page.getByText('Slim Fit, 5oz 100% Cotton T-')).toBeVisible();
-  await expect(page.getByRole('heading', { name: '$' })).toBeVisible();
+  const { getProductDescription } = new ProductDetailsComponent(page);
+
+  await expect(getProductDescription('Sacha’s elegant antlers have')).toBeVisible();
+  await expect(getProductDescription('Slim Fit, 5oz 100% Cotton T-')).toBeVisible();
+  await expect(getProductDescription('$')).toBeVisible();
 });
 
 test('Add to cart button should work', async ({ }) => {
-  await page.getByRole('button', { name: 'Add to cart' }).click();
-  await expect(page.locator('div').filter({ hasText: 'Cart summary Sacha the Deer' }).nth(1)).toBeVisible();
-  await page.locator('#snipcart').getByRole('listitem').locator('div').filter({ hasText: 'Sacha the Deer' }).nth(2).click();
+  const { getButton } = new ProductDetailsComponent(page);
+
+  await getButton().click();
 });

@@ -1,6 +1,7 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
+import OurStoryComponent from '../../components/OurStoryComponent';
 
-let page;
+let page: Page;
 
 test.beforeAll(async ({ browser }) => {
   const context = await browser.newContext();
@@ -10,26 +11,30 @@ test.beforeAll(async ({ browser }) => {
 
 
 test('Our story page has heading', async ({ }) => {
-  await expect(page.getByRole('heading', { name: 'Our story' })).toBeVisible();
+  const { getHeading } = new OurStoryComponent(page);
+
+  await expect(getHeading('Our story')).toBeVisible();
 });
 
 test('Our story page has avatars and names', async ({ }) => {
-  await expect(page.getByRole('listitem').filter({ hasText: 'Ava Sandler' })).toBeVisible();
-  await expect(page.getByRole('listitem').filter({ hasText: 'Ava Sandler' }).locator('div').first()).toBeVisible();
-  await expect(page.getByText('Ava Sandler')).toBeVisible();
+  const { getAvatar, getName } = new OurStoryComponent(page);
 
-  await expect(page.getByRole('listitem').filter({ hasText: 'Steph Poco' })).toBeVisible();
-  await expect(page.getByRole('listitem').filter({ hasText: 'Steph Poco' }).locator('div').first()).toBeVisible();
-  await expect(page.getByText('Steph Poco')).toBeVisible();
+  await expect(getAvatar('Ava Sandler')).toBeVisible();
+  await expect(getName('Ava Sandler')).toBeVisible();
+
+  await expect(getAvatar('Steph Poco')).toBeVisible();
+  await expect(getName('Steph Poco')).toBeVisible();
 });
 
 test('Our story page has motivation paragraphs', async ({ }) => {
-  await expect(page.getByRole('heading', { name: 'Passion' })).toBeVisible();
-  await expect(page.getByText('What more could you want from')).toBeVisible();
+  const { getMotivationParagraph, getMotivationText } = new OurStoryComponent(page);
 
-  await expect(page.getByRole('heading', { name: 'Animal' })).toBeVisible();
-  await expect(page.getByText('It\'s easy to forget that we\'')).toBeVisible();
+  await expect(getMotivationParagraph('Passion')).toBeVisible();
+  await expect(getMotivationText('What more could you want from')).toBeVisible();
 
-  await expect(page.getByRole('heading', { name: 'Style' })).toBeVisible();
-  await expect(page.getByText('We like to keep things plain')).toBeVisible();
+  await expect(getMotivationParagraph('Animal')).toBeVisible();
+  await expect(getMotivationText('It\'s easy to forget that we\'')).toBeVisible();
+
+  await expect(getMotivationParagraph('Style')).toBeVisible();
+  await expect(getMotivationText('We like to keep things plain')).toBeVisible();
 });
