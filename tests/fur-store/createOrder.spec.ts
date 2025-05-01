@@ -1,6 +1,6 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, Page } from '@playwright/test';
 import CartComponent from '../../components/CartComponent';
-import PaymentDetailsComponent from '../../components/PaymentDetailsComponent';
+import PaymentPage from '../../pages/PaymentPage';
 
 let page: Page;
 
@@ -11,14 +11,16 @@ test.beforeAll(async ({ browser }) => {
 })
 
 test('Create an order should display success page with order details', async ({ }) => {
-  const { addToCart, changeCartOptions, checkout } = new CartComponent(page);
-  const { fillOutForm, fillOutZipCode, fillOutAparment, fillOutCity, submit, fillCardDetails, placeOrder, assertSuccessScreen } = new PaymentDetailsComponent(page);
+  const cart = new CartComponent(page);
+  const paymentPage = new PaymentPage(page);
 
-  await addToCart('Gavin the Tiger');
-  await changeCartOptions('Small', 'Cream', 5);
-  checkout();
+  await cart.addToCart('Gavin the Tiger');
+  await cart.changeCartOptions('Small', 'Cream', 5);
+  cart.checkout();
 
-  await fillOutForm();
+  await page.pause()
+
+  await paymentPage.billingDetails.fillOutForm();
 
   await page.waitForResponse((response) =>
     response.url().includes("api/localization/addresses") &&
@@ -26,14 +28,15 @@ test('Create an order should display success page with order details', async ({ 
     response.request().method() === 'GET'
   );
 
-  await fillOutZipCode();
-  await fillOutAparment();
-  await fillOutCity();
+  await paymentPage.billingDetails.fillOutZipCode();
+  await paymentPage.billingDetails.fillOutAparment();
+  await paymentPage.billingDetails.fillOutCity();
 
-  await submit();
+  await paymentPage.billingDetails.submit();
 
-  await fillCardDetails();
-  await placeOrder();
-  await assertSuccessScreen();
+  await paymentPage.paymentDetails.fillCardDetails();
+  await paymentPage.paymentDetails.placeOrder();
+
+  await paymentPage.successfulPayment.assertSuccessScreen();
 
 });

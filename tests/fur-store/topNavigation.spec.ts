@@ -10,21 +10,21 @@ test.beforeEach(async ({ browser }) => {
 })
 
 
-test('Top navigation should navigate to Our Story', async ({ }) => {
+test('Top navigation should navigate to Our Story @smoke', async ({ }) => {
   const topNavigation = new TopNavigationComponent(page);
   await topNavigation.navigateTo('Our Story');
 
   await expect(page.getByRole('heading', { name: 'Our story' })).toBeVisible();
 });
 
-test('Top navigation should navigate to Contacts', async ({ }) => {
+test('Top navigation should navigate to Contacts @smoke', async ({ }) => {
   const topNavigation = new TopNavigationComponent(page);
   await topNavigation.navigateTo('Contact');
 
   await expect(page.getByRole('heading', { name: 'Get in touch' })).toBeVisible();
 });
 
-test('Top navigation should navigate to Products', async ({ }) => {
+test('Top navigation should navigate to Products @smoke', async ({ }) => {
   const topNavigation = new TopNavigationComponent(page);
   await topNavigation.navigateTo('Our Story');
   await topNavigation.navigateTo('Products');

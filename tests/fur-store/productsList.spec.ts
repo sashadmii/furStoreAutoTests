@@ -1,17 +1,18 @@
-import { test, expect, Page } from '@playwright/test';
-import ProductsListComponent from '../../components/ProductsListComponent';
+import { test, expect } from '@playwright/test';
+import ProductsListPage from '../../pages/ProductsListPage';
 
-let page: Page;
+
+let productsListPage: ProductsListPage;
 
 test.beforeAll(async ({ browser }) => {
-  const context = await browser.newContext();
-  page = await context.newPage();
-  await page.goto('https://ilarionhalushka.github.io/jekyll-ecommerce-demo/');
+  const page = await browser.newPage();
+  productsListPage = new ProductsListPage(page);
+  await productsListPage.open();
 })
 
 
-test('products list has products with titles', async ({ }) => {
-  const { getTitle } = new ProductsListComponent(page);
+test('products list has products with titles', async () => {
+  const { getTitle } = productsListPage.product;
 
   await expect(getTitle('Sacha the Deer')).toBeVisible();
   await expect(getTitle('Bumble the Elephant')).toBeVisible();
@@ -22,8 +23,8 @@ test('products list has products with titles', async ({ }) => {
 
 });
 
-test('products list has products with prices', async ({ }) => {
-  const { getPrice } = new ProductsListComponent(page);
+test('products list has products with prices', async () => {
+  const { getPrice } = productsListPage.product;
 
   await expect(getPrice('Sacha the Deer')).toBeVisible();
   await expect(getPrice('Bumble the Elephant Bumble')).toBeVisible();
@@ -34,8 +35,8 @@ test('products list has products with prices', async ({ }) => {
 
 });
 
-test('products list has products with images', async ({ }) => {
-  const { getImage } = new ProductsListComponent(page);
+test('products list has products with images', async () => {
+  const { getImage } = productsListPage.product;
 
   await expect(getImage(1)).toBeVisible();
   await expect(getImage(2)).toBeVisible();

@@ -1,37 +1,29 @@
 import { test, expect, Page } from '@playwright/test';
-import ContactUsComponent from '../../components/ContactUsComponent';
+import ContactUsPage from '../../pages/ContactUsPage';
 
 let page: Page;
+let contactUsPage: ContactUsPage;
 
 test.beforeAll(async ({ browser }) => {
-  const context = await browser.newContext();
-  page = await context.newPage();
-
-  await page.goto('https://ilarionhalushka.github.io/jekyll-ecommerce-demo/contact/');
+  page = await browser.newPage();
+  contactUsPage = new ContactUsPage(page);
+  await contactUsPage.open();
 })
 
-test('Contact page has header', async ({ }) => {
-  const { getHeading } = new ContactUsComponent(page);
-
-  await expect(getHeading()).toBeVisible();
+test('Contact page has header', async () => {
+  await expect(contactUsPage.getHeading()).toBeVisible();
 })
 
-test('Contact page has form title', async ({ }) => {
-  const { getFormTitle } = new ContactUsComponent(page);
-
-  await expect(getFormTitle()).toBeVisible()
+test('Contact page has form title', async () => {
+  await expect(contactUsPage.contactUsComponent.getFormTitle()).toBeVisible()
 })
 
-test('Contact page has map', async ({ }) => {
-  const { getMap } = new ContactUsComponent(page);
-
-  await expect(getMap()).toBeVisible();
+test('Contact page has map', async () => {
+  await expect(contactUsPage.contactUsComponent.getMap()).toBeVisible();
 })
 
-test('Submit contact form navigates to success page', async ({ }) => {
-  const { fillContactForm } = new ContactUsComponent(page);
-
-  await fillContactForm({
+test('Submit contact form navigates to success page', async () => {
+  await contactUsPage.contactUsComponent.fillContactForm({
     name: 'Oleksandra',
     email: 'email@gmail.com',
     message: 'Message',
